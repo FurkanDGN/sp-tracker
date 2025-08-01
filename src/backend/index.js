@@ -4,6 +4,47 @@ import { log } from 'frontend/src/helpers';
 
 const resolver = new Resolver();
 
+async function fetchIssuesPage(jql, fields, page = 0, pageSize = 100) {
+  const startAt = page * pageSize;
+
+  const response = await api
+    .asUser()
+    .requestJira(
+      route`/rest/api/3/search?jql=${jql}&fields=${fields}&startAt=${startAt}&maxResults=${pageSize}`,
+    );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${JSON.stringify(data)}`);
+  }
+
+  return {
+    issues: data.issues,
+    total: data.total,
+    hasNext: startAt + pageSize < data.total,
+  };
+}
+
+async function fetchAllIssues(jql, fields) {
+  let allIssues = [];
+  let page = 0;
+  const pageSize = 100;
+
+  while (true) {
+    const result = await fetchIssuesPage(jql, fields, page, pageSize);
+    allIssues.push(...result.issues);
+
+    if (!result.hasNext) {
+      break;
+    }
+
+    page++;
+  }
+
+  return allIssues;
+}
+
 resolver.define('getStoryPointsData', async (request) => {
   const {
     timeNumber = '12',
@@ -93,19 +134,15 @@ resolver.define('getStoryPointsData', async (request) => {
   }
 
   try {
-    const jql = `resolutiondate >= "${startDate.toISOString().split('T')[0]}" AND resolutiondate <= "${endDate.toISOString().split('T')[0]}" AND "Story point estimate" is not EMPTY`;
+    let startDateStr = startDate.toISOString().split('T')[0];
+    let endDateStr = endDate.toISOString().split('T')[0];
 
-    const response = await api
-      .asUser()
-      .requestJira(
-        route`/rest/api/3/search?jql=${jql}&fields=assignee,customfield_10016,resolutiondate&maxResults=1000`,
-      );
-    const data = await response.json();
+    const jql = `resolutiondate >= "${startDateStr}" AND resolutiondate <= "${endDateStr}" AND status IN ("Done") AND "Story point estimate" is not EMPTY`;
 
-    if (!response.ok) {
-      log.error('API Error:', data);
-      return [];
-    }
+    const allIssues = await fetchAllIssues(
+      jql,
+      'assignee,customfield_10016,resolutiondate',
+    );
 
     const periodsData = {};
     dateKeys.forEach(({ key, name }) => {
@@ -115,7 +152,7 @@ resolver.define('getStoryPointsData', async (request) => {
       };
     });
 
-    data.issues.forEach((issue) => {
+    allIssues.forEach((issue) => {
       const targetDate = issue.fields.resolutiondate;
       if (!targetDate) {
         log.warn(`Issue without resolved date:`, issue.key);
