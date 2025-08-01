@@ -1,0 +1,32 @@
+{
+  "name": "frontend",
+  "private": true,
+  "scripts": {
+    "build": "scripts/generate-env.js && vite build",
+    "clean": "rm -rf dist",
+    "lint": "npm run clean && eslint .",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:tsc": "tsc --noEmit",
+    "start": "vite --open"
+  },
+  "dependencies": {
+    "@atlaskit/button": "23.3.1",
+    "@atlaskit/css-reset": "7.3.3",
+    "@atlaskit/form": "12.0.14",
+    "@atlaskit/textfield": "8.0.8",
+    "@forge/bridge": "5.2.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "recharts": "^2.12.7"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.6",
+    "@vitejs/plugin-react-swc": "3.11.0",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "5.2.0",
+    "typescript": "5.8.3",
+    "typescript-eslint": "8.38.0",
+    "vite": "7.0.6"
+  }
+}

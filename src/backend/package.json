@@ -1,0 +1,8 @@
+{
+  "name": "backend",
+  "private": true,
+  "dependencies": {
+    "@forge/api": "^6.0.2",
+    "@forge/resolver": "1.6.15"
+  }
+}

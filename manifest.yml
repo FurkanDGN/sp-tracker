@@ -1,0 +1,31 @@
+# https://developer.atlassian.com/platform/forge/manifest-reference/
+modules:
+  jira:dashboardGadget:
+    - key: story-points-tracker
+      title: Developer Story Points
+      description: Configurable dashboard gadget that visualizes developer story points over time with interactive charts and customizable themes.
+      thumbnail: https://developer.atlassian.com/platform/forge/images/icons/issue-panel-icon.svg
+      resource: main
+      resolver:
+        function: resolver
+      edit:
+        resource: main
+  function:
+    - key: resolver
+      handler: index.handler
+
+resources:
+  - key: main
+    path: src/frontend/dist
+
+permissions:
+  scopes:
+    - read:jira-work
+  content:
+    styles:
+      - unsafe-inline
+
+app:
+  id: ari:cloud:ecosystem::app/8655d0d0-2850-4b5e-b58c-6fe2d8b70b2d
+  runtime:
+    name: nodejs20.x
