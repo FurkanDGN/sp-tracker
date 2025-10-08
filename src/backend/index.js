@@ -4,14 +4,22 @@ import { log } from 'frontend/src/helpers';
 
 const resolver = new Resolver();
 
-async function fetchIssuesPage(jql, fields, page = 0, pageSize = 100) {
-  const startAt = page * pageSize;
-
-  const response = await api
-    .asUser()
-    .requestJira(
-      route`/rest/api/3/search?jql=${jql}&fields=${fields}&startAt=${startAt}&maxResults=${pageSize}`,
-    );
+async function fetchIssuesPage(jql, fields, nextPageToken = null, maxResults = 100) {
+  let response;
+  
+  if (nextPageToken) {
+    response = await api
+      .asUser()
+      .requestJira(
+        route`/rest/api/3/search/jql?jql=${jql}&fields=${fields}&maxResults=${maxResults}&nextPageToken=${nextPageToken}`,
+      );
+  } else {
+    response = await api
+      .asUser()
+      .requestJira(
+        route`/rest/api/3/search/jql?jql=${jql}&fields=${fields}&maxResults=${maxResults}`,
+      );
+  }
 
   const data = await response.json();
 
@@ -21,25 +29,26 @@ async function fetchIssuesPage(jql, fields, page = 0, pageSize = 100) {
 
   return {
     issues: data.issues,
-    total: data.total,
-    hasNext: startAt + pageSize < data.total,
+    nextPageToken: data.nextPageToken,
+    isLast: data.isLast !== false, // If isLast is not present or true, we're done
   };
 }
 
 async function fetchAllIssues(jql, fields) {
   let allIssues = [];
-  let page = 0;
-  const pageSize = 100;
+  let nextPageToken = null;
+  const maxResults = 100;
 
   while (true) {
-    const result = await fetchIssuesPage(jql, fields, page, pageSize);
+    const result = await fetchIssuesPage(jql, fields, nextPageToken, maxResults);
     allIssues.push(...result.issues);
 
-    if (!result.hasNext) {
+    // Stop if this is the last page or there's no next page token
+    if (result.isLast || !result.nextPageToken) {
       break;
     }
 
-    page++;
+    nextPageToken = result.nextPageToken;
   }
 
   return allIssues;
