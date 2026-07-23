@@ -16,12 +16,12 @@
     "@atlaskit/textfield": "8.0.8",
     "@forge/bridge": "5.2.0",
     "react": "19.2.8",
-    "react-dom": "18.3.1",
+    "react-dom": "19.2.8",
     "recharts": "^3.10.0"
   },
   "devDependencies": {
     "@types/react": "19.2.17",
-    "@types/react-dom": "19.1.6",
+    "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react-swc": "3.11.0",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "5.2.0",
