@@ -116,7 +116,7 @@ export default function Edit(props: Props) {
                 {({ fieldProps, error }) => (
                   <div style={{ flex: '1' }}>
                     <Select
-                      {...fieldProps}
+                      {...(fieldProps as any)}
                       options={timeTypeOptions}
                       placeholder="Select type"
                     />
