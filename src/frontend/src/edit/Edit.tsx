@@ -2,6 +2,7 @@ import Form, { Field } from '@atlaskit/form';
 import Select from '@atlaskit/select';
 import Editfield from '@atlaskit/textfield';
 import Toggle from '@atlaskit/toggle';
+import type { ComponentProps } from 'react';
 
 import type { FormValues, View } from '../types';
 
@@ -116,7 +117,9 @@ export default function Edit(props: Props) {
                 {({ fieldProps, error }) => (
                   <div style={{ flex: '1' }}>
                     <Select
-                      {...(fieldProps as any)}
+                      {...(fieldProps as unknown as ComponentProps<
+                        typeof Select
+                      >)}
                       options={timeTypeOptions}
                       placeholder="Select type"
                     />
