@@ -1,6 +1,6 @@
 {
   "name": "story-points-tracker",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0",
   "description": "Story points tracker.",
   "author": "Furkan Doğan <furkandogan@atwallets.com>",
   "scripts": {
