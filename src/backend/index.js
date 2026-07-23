@@ -4,9 +4,14 @@ import { log } from 'frontend/src/helpers';
 
 const resolver = new Resolver();
 
-async function fetchIssuesPage(jql, fields, nextPageToken = null, maxResults = 100) {
+async function fetchIssuesPage(
+  jql,
+  fields,
+  nextPageToken = null,
+  maxResults = 100,
+) {
   let response;
-  
+
   if (nextPageToken) {
     response = await api
       .asUser()
@@ -40,7 +45,12 @@ async function fetchAllIssues(jql, fields) {
   const maxResults = 100;
 
   while (true) {
-    const result = await fetchIssuesPage(jql, fields, nextPageToken, maxResults);
+    const result = await fetchIssuesPage(
+      jql,
+      fields,
+      nextPageToken,
+      maxResults,
+    );
     allIssues.push(...result.issues);
 
     // Stop if this is the last page or there's no next page token
