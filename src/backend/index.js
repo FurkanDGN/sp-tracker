@@ -146,7 +146,7 @@ resolver.define('getStoryPointsData', async (request) => {
     let startDateStr = startDate.toISOString().split('T')[0];
     let endDateStr = endDate.toISOString().split('T')[0];
 
-    const jql = `resolutiondate >= "${startDateStr}" AND resolutiondate <= "${endDateStr}" AND status IN ("Done") AND "Story point estimate" is not EMPTY`;
+    const jql = `resolutiondate >= "${startDateStr}" AND resolutiondate <= "${endDateStr}" AND status IN ("Done", "Tamam") AND "Story point estimate" is not EMPTY`;
 
     const allIssues = await fetchAllIssues(
       jql,
